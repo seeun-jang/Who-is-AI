@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Who Is AI</title>
+
+    <link rel="stylesheet" href="css/index.css">
+    <script src="js/index.js" defer></script>
+</head>
+<body>
+
+    <main class="index-page">
+
+        <div class="menu-box">
+
+            <button id="startBtn" class="menu-btn">
+                START
+            </button>
+
+            <button id="howBtn" class="menu-btn">
+                HOW TO PLAY
+            </button>
+
+            <button id="settingBtn" class="menu-btn">
+                SETTINGS
+            </button>
+
+        </div>
+        <!-- HOW TO PLAY -->
+
+<div id="howModal" class="modal hidden">
+
+    <div class="paper-modal">
+
+        <h2>HOW TO PLAY</h2>
+
+        <ul>
+            <li>4 Humans and 1 AI</li>
+            <li>Discuss the topic</li>
+            <li>Find the hidden AI</li>
+            <li>Eliminate the AI to win</li>
+        </ul>
+
+        <button class="close-btn">
+            CLOSE
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- SETTINGS -->
+
+<div id="settingModal" class="modal hidden">
+
+    <div class="paper-modal">
+
+        <h2>SETTINGS</h2>
+
+        <div class="setting-row">
+            Music : <input type="checkbox" id="musicToggle">
+            <label for="musicToggle">ON</label>
+            <input type="checkbox" id="musicToggle">
+            <label for="musicToggle">OFF</label>
+        </div>
+
+        <div class="setting-row">
+            Sound FX : <input type="checkbox" id="soundToggle">
+            <label for="soundToggle">ON</label>
+            <input type="checkbox" id="soundToggle">
+            <label for="soundToggle">OFF</label>
+        </div>
+
+        <button class="close-btn">
+            CLOSE
+        </button>
+
+    </div>
+
+</div>
+
+    </main>
+
+</body>
+</html>

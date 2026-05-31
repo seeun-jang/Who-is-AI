@@ -1,0 +1,191 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    width:100vw;
+    height:100vh;
+    overflow:hidden;
+}
+
+.index-page{
+    width:100%;
+    height:100vh;
+
+    background-image:url("../assets/index-bg.png");
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+
+    position:relative;
+}
+
+/* 메뉴 */
+
+.menu-box{
+    position:absolute;
+
+    left:95px;
+    top:330px;
+
+    display:flex;
+    flex-direction:column;
+
+    gap:16px;
+}
+
+/* 사건 파일 스타일 버튼 */
+
+.menu-btn{
+
+    width:230px;
+    height:58px;
+
+    border:none;
+
+    background:#ebe1c5;
+
+    color:#2d1b10;
+
+    font-size:20px;
+    font-weight:bold;
+    letter-spacing:2px;
+
+    cursor:pointer;
+
+    position:relative;
+
+    box-shadow:
+        3px 3px 8px rgba(0,0,0,0.35);
+
+    transition:all .2s ease;
+
+    transform:rotate(-1deg);
+}
+
+/* 압정 */
+
+.menu-btn::before{
+
+    content:"";
+
+    width:12px;
+    height:12px;
+
+    background:#9c2d21;
+
+    border-radius:50%;
+
+    position:absolute;
+
+    top:8px;
+    left:10px;
+
+    box-shadow:
+        0 0 3px rgba(0,0,0,0.6);
+}
+
+/* 종이 낡은 느낌 */
+
+.menu-btn::after{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    background:
+        linear-gradient(
+            rgba(255,255,255,0.05),
+            rgba(0,0,0,0.05)
+        );
+
+    pointer-events:none;
+}
+
+.menu-btn:hover{
+
+    transform:
+        rotate(0deg)
+        translateX(5px);
+
+    background:#f6e7bd;
+}
+
+.menu-btn:active{
+
+    transform:
+        scale(0.97);
+}
+.modal{
+
+    position:fixed;
+
+    top:0;
+    left:0;
+
+    width:100%;
+    height:100%;
+
+    background:rgba(0,0,0,0.55);
+
+    display:flex;
+
+    justify-content:center;
+    align-items:center;
+
+    z-index:999;
+}
+
+.hidden{
+    display:none;
+}
+
+.paper-modal{
+
+    width:500px;
+
+    background:#efe0b6;
+
+    padding:35px;
+
+    border:2px solid #6f4c2f;
+
+    box-shadow:
+        0 0 25px rgba(0,0,0,0.45);
+
+    transform:rotate(-1deg);
+}
+
+.paper-modal h2{
+
+    margin-bottom:20px;
+
+    color:#2b1a10;
+}
+
+.paper-modal ul{
+
+    padding-left:20px;
+
+    line-height:2;
+}
+
+.close-btn{
+
+    margin-top:25px;
+
+    width:120px;
+    height:40px;
+
+    cursor:pointer;
+
+    background:#d7c08d;
+
+    border:none;
+
+    font-weight:bold;
+}
