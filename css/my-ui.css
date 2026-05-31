@@ -1,0 +1,103 @@
+/* ==============================================
+   my-ui.css | 최종 수정본
+   ============================================== */
+@import url('https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap');
+
+.hidden { display: none !important; }
+
+/* 턴 표시기 */
+#turn-indicator {
+    position: absolute; top: 22px; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    padding: 14px 28px; background: #1a0e06; border: 2px solid #5a3d1e;
+    border-top: 5px solid #c8a060; min-width: 250px; z-index: 50;
+}
+.turn-label { font-size: 9px; letter-spacing: 5px; color: #7a5535; font-family: 'Courier Prime', monospace; }
+#turn-player-name { font-size: 22px; font-weight: 900; letter-spacing: 4px; color: #f0dcb2; font-family: 'Special Elite', serif; }
+
+/* 타이머 UI */
+#timerWrap {
+    position: absolute; top: 22px; right: 24px;
+    background: rgba(12, 9, 7, 0.85); border: 2px solid #9b1a14;
+    padding: 10px 20px; border-radius: 8px; text-align: center; z-index: 50;
+}
+.timer-label { display: block; color: #cba87c; font-size: 10px; letter-spacing: 2px; margin-bottom: 5px;}
+#timerDisplay { display: block; color: #e05040; font-size: 32px; font-weight: bold; font-family: 'Special Elite', serif; }
+
+/* 탈락자 효과 */
+.player-tag, .speech-bubble { transition: filter 0.9s, opacity 0.9s, transform 0.9s; }
+.player-tag.is-dead, .speech-bubble.is-dead {
+    filter: grayscale(100%) brightness(50%); opacity: 0.6; pointer-events: none; transform: scale(0.95);
+}
+.eliminated-label {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-15deg);
+    color: #8c1d18; font-size: 20px; font-weight: bold; border: 3px solid #8c1d18;
+    padding: 2px 8px; background: rgba(0,0,0,0.7); z-index: 10; pointer-events: none; font-family: 'Special Elite', serif;
+}
+
+/* 투표창 */
+.vote-list { display: flex; flex-direction: column; gap: 10px; margin: 20px 0; text-align: left; }
+.vote-option {
+    background: rgba(90, 61, 30, 0.15); border: 1px solid #7a5535;
+    padding: 12px 15px; border-radius: 4px; font-size: 18px; color: #24160c;
+    display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.2s;
+}
+.vote-option:hover { background: rgba(90, 61, 30, 0.3); border-color: #6f1d16; }
+
+/* 모달 공통 */
+.topic-modal { font-family: 'Courier Prime', monospace; }
+.stamp { position: absolute; top: 28px; right: 18px; padding: 6px 12px; border: 4px solid #9b1a14; color: #9b1a14; font-size: 16px; font-weight: 900; opacity: 0; font-family: 'Special Elite', serif; transform: rotate(-10deg); }
+.stamp.stamp-active { animation: verdict-stamp-in 0.4s forwards; }
+@keyframes verdict-stamp-in { 0% { opacity: 0; transform: rotate(-10deg) scale(3.5); } 100% { opacity: 1; transform: rotate(-10deg) scale(1); } }
+
+/* 탐정 수첩 */
+.notebook-tab { position: fixed; top: 50%; right: 0; transform: translateY(-50%); display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 16px 5px; background: #1a0e06; border: 2px solid #5a3d1e; border-right: none; cursor: pointer; z-index: 900; }
+.notebook-tab-icon { color: #c8a060; font-weight: 900; }
+.notebook-tab-text { font-size: 10px; color: #7a5535; writing-mode: vertical-rl; transform: rotate(180deg); }
+.notebook-overlay { position: fixed; inset: 0; background: rgba(10, 6, 2, 0.55); z-index: 910; }
+.notebook-panel { position: fixed; top: 0; right: 0; bottom: 0; width: 380px; background: #e8d9a8; border-left: 4px solid #5a3d1e; padding: 24px 20px; z-index: 920; transition: transform 0.4s; font-family: 'Courier Prime', monospace; }
+.notebook-panel.hidden { display: block !important; transform: translateX(100%); }
+.nb-header { display: flex; justify-content: space-between; margin-bottom: 6px; }
+.nb-title { font-size: 22px; font-weight: 900; color: #1e1309; font-family: 'Special Elite', serif; }
+.nb-rule { width: 100%; height: 2px; background: #7a5535; margin: 10px 0 15px; }
+.nb-cards { display: flex; flex-direction: column; gap: 14px; }
+.nb-card { background: rgba(255, 248, 225, 0.65); border: 1px solid rgba(90, 61, 30, 0.3); border-left: 4px solid #7a5535; padding: 12px; }
+.nb-textarea { width: 100%; height: 60px; background: transparent; border: 1px dashed rgba(90,61,30,0.4); font-family: inherit; resize: none; padding: 8px;}
+.nb-footer { display: flex; justify-content: space-between; margin-top: 20px; padding-top: 15px; border-top: 2px dashed #7a5535; }
+.nb-clear-btn { background: #4a2d17; color: #f3d9a0; border: none; padding: 8px 12px; cursor: pointer; }
+.nb-save-status { font-weight: bold; color: #3a6b40; }
+
+/* 수첩 닫기(X) 버튼 (통일된 스타일) */
+.nb-close-btn {
+    width: 28px; height: 28px;
+    background: #e8d9a8; 
+    border: 2px solid #5a3d1e;
+    color: #5a3d1e;
+    font-size: 14px;
+    font-weight: 900;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Courier Prime', monospace;
+}
+.nb-close-btn:hover {
+    background: #5a3d1e;
+    color: #e8d9a8;
+    transform: scale(1.05);
+}
+
+/* 말풍선 하단 메모 */
+.board-memo-tag {
+    display: none;
+    background: #2a1a10;
+    border-top: 1.5px solid #5a3a20;
+    padding: 6px 12px;
+    flex-direction: column;
+    gap: 2px;
+    font-family: 'Courier Prime', monospace;
+}
+.board-memo-tag .suspect-mark { color: #e05040; font-size: 10px; font-weight: 900; }
+.board-memo-tag .memo-text { color: #d8b173; font-size: 10px; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px; }
