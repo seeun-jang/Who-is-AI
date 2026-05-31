@@ -1,0 +1,93 @@
+/* 대기 화면 전체 필터 */
+
+.waiting-overlay {
+    position: fixed;
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.48);
+    backdrop-filter: grayscale(100%) brightness(55%);
+
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+
+    padding-right: 54px;
+    padding-bottom: 110px;
+
+    z-index: 9999;
+}
+
+/* 숨김 */
+
+.waiting-overlay.hidden {
+    display: none;
+}
+
+/* 오른쪽 아래 관전 패널 */
+
+.waiting-panel {
+    width: 300px;
+
+    padding: 26px 24px;
+
+    background: rgba(18, 13, 9, 0.88);
+    border: 2px solid #9b7041;
+    border-radius: 10px;
+
+    color: #f2d7a0;
+
+    text-align: left;
+
+    box-shadow: 0 0 28px rgba(0, 0, 0, 0.75);
+}
+
+/* 작은 상태 라벨 */
+
+.waiting-panel .waiting-label {
+    display: inline-block;
+
+    margin-bottom: 14px;
+    padding: 5px 10px;
+
+    background: rgba(155, 112, 65, 0.22);
+    border: 1px solid rgba(242, 215, 160, 0.45);
+
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: #d8b173;
+}
+
+/* 제목 */
+
+.waiting-panel h2 {
+    margin-bottom: 14px;
+
+    font-size: 30px;
+    color: #312d27;
+}
+
+/* 설명 */
+
+.waiting-panel p {
+    margin-bottom: 10px;
+
+    font-size: 16px;
+    line-height: 1.6;
+
+    color: rgba(98, 92, 78, 0.88);
+}
+
+/* 상태 표시 */
+
+.waiting-status {
+    margin-top: 20px;
+    padding: 11px 12px;
+
+    background: rgba(234, 215, 168, 0.12);
+    border-left: 4px solid #d8b173;
+
+    color: #f3d9a0;
+
+    font-size: 13px;
+    letter-spacing: 1.5px;
+}

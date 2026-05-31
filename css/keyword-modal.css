@@ -1,0 +1,129 @@
+/* 모달 배경 */
+
+.modal-overlay {
+
+    position: fixed;
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.75);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 9999;
+}
+
+.hidden {
+    display: none;
+}
+
+/* 종이 */
+
+.topic-modal {
+
+    position: relative;
+
+    width: 500px;
+
+    padding: 50px 40px;
+
+    background: #e8d7ad;
+
+    border: 3px solid #5a3d1e;
+
+    box-shadow:
+            0 0 50px rgba(0,0,0,0.7),
+            inset 0 0 20px rgba(90,61,30,0.15);
+
+    transform: rotate(-1deg);
+
+    text-align: center;
+
+    color: #2b1c11;
+}
+
+.topic-modal::before {
+
+    content: "";
+
+    position: absolute;
+    inset: 8px;
+
+    border: 1px dashed rgba(90,61,30,0.35);
+
+    pointer-events: none;
+}
+
+/* TOP SECRET */
+
+.topic-modal h2 {
+
+    font-size: 42px;
+
+    color: #8c1d18;
+
+    letter-spacing: 4px;
+
+    margin-bottom: 20px;
+
+    text-transform: uppercase;
+}
+
+/* 설명 */
+
+.topic-modal p {
+
+    font-size: 20px;
+
+    margin-bottom: 30px;
+
+    color: #4f3923;
+}
+
+/* 제시어 */
+
+.topic-modal strong {
+
+    display: block;
+
+    font-size: 58px;
+
+    color: #23160c;
+
+    letter-spacing: 5px;
+
+    margin-bottom: 35px;
+
+    text-transform: uppercase;
+}
+
+/* 확인 버튼 */
+
+.topic-modal button {
+
+    width: 170px;
+    height: 52px;
+
+    border: none;
+
+    background: #3d2615;
+
+    color: #f0dcb2;
+
+    font-size: 18px;
+    font-weight: bold;
+
+    letter-spacing: 2px;
+
+    cursor: pointer;
+
+    transition: 0.25s;
+}
+
+.topic-modal button:hover {
+
+    background: #5b3820;
+
+    transform: scale(1.05);
+}

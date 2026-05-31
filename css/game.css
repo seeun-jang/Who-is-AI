@@ -1,0 +1,356 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    font-family: Georgia, "Malgun Gothic", serif;
+    background: #080604;
+}
+
+.game-page {
+    width: 100vw;
+    height: 100vh;
+
+    background-image: url("../assets/game-bg.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    position: relative;
+}
+
+/* =============================================
+   왼쪽 상단 제시어
+   ============================================= */
+
+.topic-board {
+    position: absolute;
+    top: 22px;
+    left: 24px;
+
+    width: 230px;
+    height: 126px;
+
+    background: rgba(12, 9, 7, 0.78);
+    border: 2px solid #9b7041;
+    border-radius: 8px;
+
+    color: #f2d7a0;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.65);
+    z-index: 5;
+}
+
+.topic-board span {
+    font-size: 18px;
+    letter-spacing: 5px;
+    color: #c7a56b;
+}
+
+.topic-board strong {
+    margin-top: 10px;
+    font-size: 44px;
+    letter-spacing: 4px;
+    color: #f5e0b2;
+}
+
+/* =============================================
+   말풍선 공통 - 이름 + 내용 분할 구조
+   ============================================= */
+
+.speech-bubble {
+    position: absolute;
+
+    min-width: 120px;
+    max-width: 185px;
+
+    background: rgba(238, 220, 183, 0.96);
+    border: 2px solid #5a3a20;
+    border-radius: 13px;
+
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.45);
+
+    overflow: hidden;
+    z-index: 4;
+
+    /* padding 제거 - 헤더/바디가 각각 처리 */
+    padding: 0;
+}
+
+/* 꼬리 제거 유지 */
+.speech-bubble::after {
+    display: none;
+}
+
+/* 플레이어 이름 헤더 영역 */
+.bubble-header {
+    width: 100%;
+    padding: 5px 12px;
+
+    background: #5a3a20;
+    border-bottom: 1px solid #3d2410;
+
+    color: #f5e0b2;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+
+    user-select: none;
+}
+
+/* 추측 내용 바디 영역 */
+.bubble-body {
+    padding: 9px 13px;
+
+    color: #24160c;
+    font-size: 15px;
+    line-height: 1.45;
+}
+
+/* =============================================
+   말풍선 위치
+   스크린샷 실측 기반
+   - Player1 머리: left 50%, top 20%
+   - Player2 머리: left 27%, top 32%
+   - Player3 머리: left 74%, top 30%
+   - Player4 머리: left 27%, top 62%
+   - Player5 머리: left 66%, top 60%
+   ============================================= */
+
+/* Player 1 - 상단 중앙 */
+.bubble-1 {
+    right: 33%;
+    transform: translateX(-55%);
+    top: 6%;
+}
+
+/* Player 2 - 왼쪽 상단 */
+.bubble-2 {
+    left: 10%;
+    top: 22%;
+}
+
+/* Player 3 - 오른쪽 상단 */
+.bubble-3 {
+    right: 10%;
+    top: 20%;
+}
+
+/* Player 4 - 왼쪽 하단 */
+.bubble-4 {
+    left: 9%;
+    top: 53%;
+}
+
+/* Player 5 - 오른쪽 하단 */
+.bubble-5 {
+    right: 13%;
+    top: 55%;
+}
+
+/* =============================================
+   채팅 입력창
+   ============================================= */
+
+.chat-bar {
+    position: absolute;
+
+    left: 50%;
+    bottom: 28px;
+    transform: translateX(-50%);
+
+    width: 66%;
+    height: 70px;
+
+    padding: 10px;
+
+    display: flex;
+    gap: 12px;
+
+    background: rgba(10, 8, 6, 0.88);
+    border: 2px solid #9b7041;
+    border-radius: 12px;
+
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.65);
+    z-index: 10;
+}
+
+.chat-bar input {
+    flex: 1;
+    padding: 0 22px;
+
+    background: rgba(20, 17, 14, 0.95);
+    border: 1px solid #4b3522;
+    border-radius: 8px;
+
+    color: #f0dcb2;
+    font-size: 18px;
+
+    outline: none;
+}
+
+.chat-bar input::placeholder {
+    color: rgba(240, 220, 178, 0.55);
+}
+
+.chat-bar button {
+    width: 72px;
+
+    background: #d8b173;
+    border: none;
+    border-radius: 8px;
+
+    color: #20140b;
+    font-size: 28px;
+    font-weight: bold;
+
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.chat-bar button:hover {
+    background: #f0ca87;
+    transform: scale(1.04);
+}
+
+/* =============================================
+   제시어 모달
+   ============================================= */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.68);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 999;
+}
+
+.modal-overlay.hidden {
+    display: none;
+}
+
+.topic-modal {
+    width: 420px;
+    padding: 38px 34px;
+
+    background: #ead7a8;
+    border: 3px solid #4a2d17;
+
+    color: #24160c;
+    text-align: center;
+
+    box-shadow: 0 0 35px rgba(0, 0, 0, 0.75);
+    transform: rotate(-1deg);
+}
+
+.topic-modal h2 {
+    font-size: 34px;
+    margin-bottom: 18px;
+    letter-spacing: 2px;
+}
+
+.topic-modal p {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.topic-modal strong {
+    display: block;
+    margin: 18px 0 30px;
+
+    font-size: 46px;
+    letter-spacing: 3px;
+
+    color: #6f1d16;
+}
+
+.topic-modal button {
+    width: 150px;
+    height: 45px;
+
+    background: #3b2413;
+    border: none;
+
+    color: #f3d9a0;
+    font-size: 16px;
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+.topic-modal button:hover {
+    background: #5a351b;
+}
+.waiting-overlay {
+    position: fixed;
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: grayscale(100%) brightness(45%);
+
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    padding-right: 70px;
+
+    z-index: 9999;
+}
+
+.waiting-overlay.hidden {
+    display: none;
+}
+
+.waiting-panel {
+    width: 360px;
+    padding: 38px 32px;
+
+    background: rgba(234, 215, 168, 0.94);
+    border: 3px solid #4a2d17;
+
+    color: #24160c;
+    text-align: center;
+
+    box-shadow: 0 0 35px rgba(0, 0, 0, 0.75);
+
+    transform: rotate(-1deg);
+}
+
+.waiting-panel h2 {
+    margin-bottom: 22px;
+    font-size: 34px;
+}
+
+.waiting-panel p {
+    margin-bottom: 14px;
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+.waiting-status {
+    margin-top: 28px;
+    padding: 12px;
+
+    background: rgba(55, 35, 20, 0.9);
+    color: #f3d9a0;
+
+    font-size: 14px;
+    letter-spacing: 2px;
+}
+
