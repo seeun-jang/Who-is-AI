@@ -101,3 +101,35 @@
 }
 .board-memo-tag .suspect-mark { color: #e05040; font-size: 10px; font-weight: 900; }
 .board-memo-tag .memo-text { color: #d8b173; font-size: 10px; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px; }
+
+/* ==============================================
+   최후의 변론 (LAST WORDS) 모드 시각 효과
+   ============================================== */
+#turn-indicator.last-word-mode {
+    border-top-color: #8c1d18 !important;
+    background: rgba(30, 10, 5, 0.9) !important;
+    box-shadow: 0 0 20px rgba(140, 29, 24, 0.5) !important;
+}
+
+#turn-indicator.last-word-mode .turn-label {
+    color: #e05040;
+    animation: last-word-blink 1s infinite;
+}
+
+#turn-indicator.last-word-mode #turn-player-name {
+    color: #ffcccc;
+}
+
+@keyframes last-word-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+/* ==============================================
+   플레이어 1 말풍선 위치 수정 (턴 표시기 가림 방지)
+   ============================================== */
+.speech-bubble.bubble-1 {
+    left: 37% !important;  /* 기존보다 훨씬 왼쪽으로 이동 */
+    right: auto !important; /* 혹시 모를 우측 정렬 끄기 */
+    z-index: 40 !important; /* 턴 표시기보다 뒤, 캐릭터보단 앞에 오도록 설정 */
+}

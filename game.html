@@ -91,10 +91,26 @@
                 
                 <div style="display: flex; justify-content: center; gap: 15px; margin-top: 30px;">
                     <button id="cancelExecuteBtn" style="background: #5a3d1e; width: 140px; border: none; color: #f0dcb2; font-weight: bold; cursor: pointer;">다시 선택</button>
-                    <button id="doExecuteBtn" style="background: #8c1d18; width: 140px; border: none; color: #f0dcb2; font-weight: bold; cursor: pointer;">처형 집행</button>
+                    <button id="doExecuteBtn" style="background: #8c1d18; width: 140px; border: none; color: #f0dcb2; font-weight: bold; cursor: pointer;">투표하기</button>
                 </div>
             </div>
         </div>
+
+        <div id="finalDecisionModal" class="modal-overlay hidden">
+        <div class="topic-modal" style="border-color: #8c1d18;">
+            <h2 style="color: #8c1d18; font-size: 32px;">FINAL DECISION</h2>
+            <p style="font-size: 16px; margin-bottom: 20px;">최후의 발언이 끝났습니다.</p>
+            <div style="margin: 20px 0;">
+                <strong id="finalDecisionTargetName" style="font-size: 36px; color: #23160c;">PLAYER</strong>
+            </div>
+            <p style="font-size: 20px; font-weight: bold; color: #8c1d18; white-space: nowrap;">이 플레이어를 처형하시겠습니까?</p>
+            
+            <div style="display: flex; justify-content: center; gap: 15px; margin-top: 30px;">
+                <button id="btnSpare" style="background: #3a6b40; width: 140px; border: none; color: #f0dcb2; font-weight: bold; cursor: pointer; padding: 12px 0;">사면 (살려주기)</button>
+                <button id="btnExecute" style="background: #8c1d18; width: 140px; border: none; color: #f0dcb2; font-weight: bold; cursor: pointer; padding: 12px 0;">처형 집행</button>
+            </div>
+        </div>
+    </div>
 
         <div id="verdictModal" class="modal-overlay hidden">
             <div class="topic-modal">

@@ -1,22 +1,21 @@
 /* ==============================================
-   my-ui.js  |  순환 버그 수정 및 수첩 기능 완벽 연동 버전
+   my-ui.js  |  누락된 함수 복구 및 턴 버그 완벽 수정본
    ============================================== */
 
-/* ── 1. 플레이어 정보 및 상태 ── */
 const PLAYERS = [
     { name: "Player 1", bubbleClass: "bubble-1", isDead: false, isAI: false, memo: "", isSuspect: false },
     { name: "Player 2", bubbleClass: "bubble-2", isDead: false, isAI: false, memo: "", isSuspect: false },
-    { name: "Player 3", bubbleClass: "bubble-3", isDead: false, isAI: true,  memo: "", isSuspect: false }, // 테스트용 AI
+    { name: "Player 3", bubbleClass: "bubble-3", isDead: false, isAI: true,  memo: "", isSuspect: false }, 
     { name: "Player 4", bubbleClass: "bubble-4", isDead: false, isAI: false, memo: "", isSuspect: false },
     { name: "Player 5", bubbleClass: "bubble-5", isDead: false, isAI: false, memo: "", isSuspect: false },
 ];
 
 let currentTurn = 0; 
 let isFreeTalkPhase = false;
+let isLastWordPhase = false; 
 let pendingExecutionTarget = null; 
 let freeTalkTimerInterval = null;
-let timeLeft = 5; // ★ 테스트용 5초 (실제 60초로 변경)
-let turnCounter = 0; // ★ 버그 해결의 핵심: 채팅 친 횟수 기록
+let timeLeft = 60; 
 
 /* DOM 참조 */
 const turnPlayerName = document.getElementById("turn-player-name");
@@ -25,27 +24,29 @@ const freeTalkModal = document.getElementById("freeTalkModal");
 const turnIndicator = document.getElementById("turn-indicator");
 const timerWrap = document.getElementById("timerWrap");
 const timerDisplay = document.getElementById("timerDisplay");
-
 const voteModal = document.getElementById("voteModal");
 const voteList = document.getElementById("voteList");
-
 const confirmExecuteModal = document.getElementById("confirmExecuteModal");
 const confirmTargetName = document.getElementById("confirmTargetName");
+
+const finalDecisionModal = document.getElementById("finalDecisionModal");
+const finalDecisionTargetName = document.getElementById("finalDecisionTargetName");
+const btnSpare = document.getElementById("btnSpare");
+const btnExecute = document.getElementById("btnExecute");
 
 const verdictModal = document.getElementById("verdictModal");
 const verdictPlayerName = document.getElementById("verdictPlayerName");
 const verdictIdentity = document.getElementById("verdictIdentity");
 const verdictStamp = document.getElementById("verdictStamp");
-
 const resultModal = document.getElementById("resultModal");
 
 /* ==============================================
-   [Phase 1] 턴 표시기 & 말풍선
+   [Phase 1 & 2] 턴 표시기 및 자유 토론
    ============================================== */
 function updateTurnIndicator() {
-    if (isFreeTalkPhase) return;
+    if (isFreeTalkPhase || isLastWordPhase) return;
     const player = PLAYERS[currentTurn];
-    turnPlayerName.textContent = player.name;
+    if(turnPlayerName) turnPlayerName.textContent = player.name;
     turnPips.forEach((pip, i) => pip.classList.toggle("active", i === currentTurn));
 }
 
@@ -55,24 +56,20 @@ function triggerBubblePop(el) {
     el.style.animation = "bubble-pop 0.25s ease both";
 }
 
-/* ==============================================
-   [Phase 2 & 3] 자유 토론 시작 및 타이머
-   ============================================== */
-function openFreeTalkModal() { 
-    if(freeTalkModal) freeTalkModal.classList.remove("hidden"); 
+// ★ 실수로 지웠던 자유 토론 창 띄우는 함수 복구 완료! ★
+function openFreeTalkModal() {
+    if(freeTalkModal) freeTalkModal.classList.remove("hidden");
 }
 
-const freeTalkConfirmBtn = document.getElementById("freeTalkConfirmBtn");
-if (freeTalkConfirmBtn) {
-    freeTalkConfirmBtn.addEventListener("click", () => {
+if (document.getElementById("freeTalkConfirmBtn")) {
+    document.getElementById("freeTalkConfirmBtn").addEventListener("click", () => {
         freeTalkModal.classList.add("hidden");
-        
         isFreeTalkPhase = true;
         turnIndicator.classList.add("free-talk-mode");
         turnPlayerName.textContent = "FREE TALK";
         turnIndicator.querySelector(".turn-label").textContent = "OPEN DISCUSSION";
 
-        timeLeft = 5; // ★ 테스트용 (실제 60초로 변경)
+        timeLeft = 5; 
         timerDisplay.textContent = timeLeft;
         timerWrap.classList.remove("hidden");
 
@@ -92,104 +89,113 @@ if (freeTalkConfirmBtn) {
    [Phase 4] 투표 모달
    ============================================== */
 function openVoteModal() {
+    if(!voteList) return;
     voteList.innerHTML = "";
-    const survivors = PLAYERS.map((p, i) => ({ index: i, player: p })).filter(s => !s.player.isDead);
-    
-    survivors.forEach(s => {
+    PLAYERS.map((p, i) => ({ index: i, player: p })).filter(s => !s.player.isDead).forEach(s => {
         const div = document.createElement("div");
         div.className = "vote-option";
-        div.innerHTML = `
-            <input type="radio" name="voteTarget" id="vote_${s.index}" value="${s.index}">
-            <label for="vote_${s.index}">${s.player.name}</label>
-        `;
+        div.innerHTML = `<input type="radio" name="voteTarget" id="vote_${s.index}" value="${s.index}"><label for="vote_${s.index}">${s.player.name}</label>`;
         voteList.appendChild(div);
     });
-
-    if(voteModal) voteModal.classList.remove("hidden");
+    voteModal.classList.remove("hidden");
 }
 
-const voteConfirmBtn = document.getElementById("voteConfirmBtn");
-if (voteConfirmBtn) {
-    voteConfirmBtn.addEventListener("click", () => {
+if (document.getElementById("voteConfirmBtn")) {
+    document.getElementById("voteConfirmBtn").addEventListener("click", () => {
         const selected = document.querySelector('input[name="voteTarget"]:checked');
-        if (!selected) {
-            alert("투표할 플레이어를 선택해주세요!");
-            return;
-        }
+        if (!selected) return alert("투표할 플레이어를 선택해주세요!");
         voteModal.classList.add("hidden");
-
+        
         const targetIndex = parseInt(selected.value);
-        const targetPlayer = PLAYERS[targetIndex];
-        pendingExecutionTarget = { index: targetIndex, isAI: targetPlayer.isAI, name: targetPlayer.name };
-
-        // 정체 공개 대신 '처형 확인 모달' 띄우기
-        confirmTargetName.textContent = targetPlayer.name;
-        confirmExecuteModal.classList.remove("hidden");
+        pendingExecutionTarget = { index: targetIndex, isAI: PLAYERS[targetIndex].isAI, name: PLAYERS[targetIndex].name };
+        if(confirmTargetName) confirmTargetName.textContent = pendingExecutionTarget.name;
+        if(confirmExecuteModal) confirmExecuteModal.classList.remove("hidden");
     });
 }
 
 /* ==============================================
-   [Phase 4.5] 처형 재확인 모달
+   [Phase 4.5] 유언 돌입 및 최종 결정 모달
    ============================================== */
-const cancelExecuteBtn = document.getElementById("cancelExecuteBtn");
-if (cancelExecuteBtn) {
-    cancelExecuteBtn.addEventListener("click", () => {
+if (document.getElementById("cancelExecuteBtn")) {
+    document.getElementById("cancelExecuteBtn").addEventListener("click", () => {
         confirmExecuteModal.classList.add("hidden");
-        openVoteModal(); // 다시 선택
+        openVoteModal();
     });
 }
 
-const doExecuteBtn = document.getElementById("doExecuteBtn");
-if (doExecuteBtn) {
-    doExecuteBtn.addEventListener("click", () => {
+if (document.getElementById("doExecuteBtn")) {
+    document.getElementById("doExecuteBtn").addEventListener("click", () => {
         confirmExecuteModal.classList.add("hidden");
+        
+        isLastWordPhase = true;
+        currentTurn = pendingExecutionTarget.index;
+        
+        turnIndicator.classList.add("last-word-mode");
+        turnPlayerName.textContent = pendingExecutionTarget.name;
+        turnIndicator.querySelector(".turn-label").textContent = "LAST WORDS (10s)";
+        
+        let lastWordTime = 10;
+        timerDisplay.textContent = lastWordTime;
+        timerWrap.classList.remove("hidden");
+        
+        freeTalkTimerInterval = setInterval(() => {
+            lastWordTime--;
+            timerDisplay.textContent = lastWordTime;
+            
+            if (lastWordTime <= 0) {
+                clearInterval(freeTalkTimerInterval);
+                timerWrap.classList.add("hidden");
+                turnIndicator.classList.remove("last-word-mode");
+                
+                if(finalDecisionTargetName) finalDecisionTargetName.textContent = pendingExecutionTarget.name;
+                if(finalDecisionModal) finalDecisionModal.classList.remove("hidden");
+            }
+        }, 1000);
+    });
+}
+
+if(btnSpare) {
+    btnSpare.addEventListener("click", () => {
+        finalDecisionModal.classList.add("hidden");
+        startNewRound(); 
+    });
+}
+if(btnExecute) {
+    btnExecute.addEventListener("click", () => {
+        finalDecisionModal.classList.add("hidden");
         openVerdictModal(pendingExecutionTarget.name, pendingExecutionTarget.isAI);
     });
 }
 
 /* ==============================================
-   [Phase 5] 정체 공개 모달
+   [Phase 5] 정체 공개 및 승패
    ============================================== */
 function openVerdictModal(playerName, isAI) {
-    verdictStamp.classList.remove("stamp-active");
-    verdictPlayerName.textContent = playerName;
-
-    if (isAI) {
-        verdictIdentity.textContent = "AI (인공지능)";
-        verdictIdentity.style.color = "#8c1d18";
-    } else {
-        verdictIdentity.textContent = "HUMAN (인간)";
-        verdictIdentity.style.color = "#3a6b40";
+    if(verdictStamp) verdictStamp.classList.remove("stamp-active");
+    if(verdictPlayerName) verdictPlayerName.textContent = playerName;
+    if(verdictIdentity) {
+        verdictIdentity.textContent = isAI ? "AI (인공지능)" : "HUMAN (인간)";
+        verdictIdentity.style.color = isAI ? "#8c1d18" : "#3a6b40";
     }
-
-    verdictModal.classList.remove("hidden");
-    setTimeout(() => { verdictStamp.classList.add("stamp-active"); }, 200);
+    if(verdictModal) verdictModal.classList.remove("hidden");
+    setTimeout(() => { if(verdictStamp) verdictStamp.classList.add("stamp-active"); }, 200);
 }
 
-const verdictConfirmBtn = document.getElementById("verdictConfirmBtn");
-if (verdictConfirmBtn) {
-    verdictConfirmBtn.addEventListener("click", () => {
+if (document.getElementById("verdictConfirmBtn")) {
+    document.getElementById("verdictConfirmBtn").addEventListener("click", () => {
         verdictModal.classList.add("hidden");
-        
-        const targetIndex = pendingExecutionTarget.index;
-        setPlayerDead(targetIndex + 1);
+        setPlayerDead(pendingExecutionTarget.index + 1);
 
-        if (PLAYERS[targetIndex].isAI) {
+        if (pendingExecutionTarget.isAI) {
             setTimeout(() => openResultModal("human"), 500);
         } else {
             const survivors = PLAYERS.filter(p => !p.isDead);
-            if (survivors.length <= 1) {
-                setTimeout(() => openResultModal("ai"), 500);
-            } else {
-                setTimeout(startNewRound, 1000); 
-            }
+            if (survivors.length <= 1) setTimeout(() => openResultModal("ai"), 500);
+            else setTimeout(startNewRound, 1000); 
         }
     });
 }
 
-/* ==============================================
-   [Phase 6] 결과 모달 & 다음 라운드 리셋
-   ============================================== */
 function openResultModal(winner) {
     if (winner === "human") {
         document.getElementById("resultTitle").textContent = "HUMAN VICTORY";
@@ -198,89 +204,94 @@ function openResultModal(winner) {
         document.getElementById("resultTitle").textContent = "AI VICTORY";
         document.getElementById("resultDesc").textContent = "시민들이 모두 희생되었습니다.";
     }
-    resultModal.classList.remove("hidden");
+    if(resultModal) resultModal.classList.remove("hidden");
 }
 
-const resultBackBtn = document.getElementById("resultBackBtn");
-if (resultBackBtn) {
-    resultBackBtn.addEventListener("click", () => {
-        location.href = "index.html"; 
-    });
+if (document.getElementById("resultBackBtn")) {
+    document.getElementById("resultBackBtn").addEventListener("click", () => { location.href = "index.html"; });
 }
 
 function startNewRound() {
     isFreeTalkPhase = false;
-    turnCounter = 0; // ★ 라운드가 바뀌면 채팅 횟수 초기화!
+    isLastWordPhase = false;
+    clearInterval(freeTalkTimerInterval);
     
-    turnIndicator.classList.remove("free-talk-mode");
+    turnIndicator.classList.remove("free-talk-mode", "last-word-mode");
     turnIndicator.querySelector(".turn-label").textContent = "NOW SPEAKING";
+    timerWrap.classList.add("hidden");
 
-    const survivors = PLAYERS.map((p, i) => ({ index: i, player: p })).filter(s => !s.player.isDead);
-    currentTurn = survivors[0].index; // 첫 번째 생존자로 턴 세팅
+    const firstSurvivorIndex = PLAYERS.findIndex(p => !p.isDead);
+    currentTurn = firstSurvivorIndex;
     updateTurnIndicator();
 }
 
 /* ==============================================
-   채팅 & 탈락자 처리 핵심 로직
+   [핵심] 채팅 및 턴 순환 로직
    ============================================== */
 function setPlayerDead(playerIndex) {
     const tag = document.querySelector(`.player-tag.player-${playerIndex}`);
     const bubble = document.querySelector(`.speech-bubble.bubble-${playerIndex}`);
-    if(!tag) return;
-    
-    if (!tag.querySelector(".eliminated-label")) {
-        const label = document.createElement("div");
-        label.className = "eliminated-label";
-        label.textContent = "ELIMINATED";
-        tag.appendChild(label);
+    if(tag) {
+        tag.classList.add("is-dead");
+        if (!tag.querySelector(".eliminated-label")) {
+            const label = document.createElement("div");
+            label.className = "eliminated-label"; label.textContent = "ELIMINATED"; tag.appendChild(label);
+        }
     }
-    tag.classList.add("is-dead");
     if(bubble) bubble.classList.add("is-dead");
     PLAYERS[playerIndex - 1].isDead = true;
-    
     renderNotebookCards();
 }
 
 window.sendMessage = function() {
-    const chatInput = document.getElementById("chatInput");
-    if (!chatInput) return;
-    
-    const message = chatInput.value.trim();
-    if (message === "") return;
+    const input = document.getElementById("chatInput");
+    if (!input || input.value.trim() === "") return;
+    const message = input.value.trim();
 
-    // 1. 말풍선 띄우기
     const player = PLAYERS[currentTurn];
     const bubble = document.querySelector(`.${player.bubbleClass} .bubble-body`);
-    if (bubble) {
-        bubble.textContent = message;
-        triggerBubblePop(bubble);
-    }
-    chatInput.value = "";
 
-    // 2. 자유 채팅 중이면 여기서 종료
+    // 1. 유언 모드일 때
+    if (isLastWordPhase) {
+        clearInterval(freeTalkTimerInterval);
+        timerWrap.classList.add("hidden");
+        turnIndicator.classList.remove("last-word-mode");
+        
+        if (bubble) { bubble.textContent = message; triggerBubblePop(bubble); }
+        input.value = "";
+        
+        setTimeout(() => {
+            if(finalDecisionTargetName) finalDecisionTargetName.textContent = pendingExecutionTarget.name;
+            if(finalDecisionModal) finalDecisionModal.classList.remove("hidden");
+        }, 1000);
+        return;
+    }
+
+    // 2. 일반 모드일 때
+    if (bubble) { bubble.textContent = message; triggerBubblePop(bubble); }
+    input.value = "";
+
     if (isFreeTalkPhase) return;
 
-    // 3. 턴제 모드일 때: 말한 횟수 증가
-    turnCounter++;
-    
-    const survivorsCount = PLAYERS.filter(p => !p.isDead).length;
+    // 3. 턴 돌리기 (다음 생존자 찾기)
+    let next = (currentTurn + 1) % PLAYERS.length;
+    while (PLAYERS[next].isDead) {
+        next = (next + 1) % PLAYERS.length;
+    }
 
-    // 4. 생존자 수만큼 다 말했으면 완벽하게 자유토론 모달 띄우기
-    if (turnCounter >= survivorsCount) {
+    const firstSurvivorIndex = PLAYERS.findIndex(p => !p.isDead);
+
+    // ★ 한 바퀴 다 돌았으면 아까 복구한 openFreeTalkModal() 호출!
+    if (next === firstSurvivorIndex) {
         setTimeout(openFreeTalkModal, 400);
     } else {
-        // 아직 덜 말했으면 다음 생존자에게 턴 넘기기
-        let next = (currentTurn + 1) % PLAYERS.length;
-        while (PLAYERS[next].isDead) {
-            next = (next + 1) % PLAYERS.length;
-        }
         currentTurn = next;
         updateTurnIndicator();
     }
 }
 
 /* ==============================================
-   탐정 수첩 로직 (데이터 저장 & 말풍선 시각 효과 연동)
+   수첩 로직 (데이터 유지 & 보드 연동)
    ============================================== */
 const nbTab = document.getElementById("notebookTab");
 const nbOverlay = document.getElementById("notebookOverlay");
@@ -313,7 +324,6 @@ function showSaveStatus() {
     }
 }
 
-// ★ 추가됨: 메인 보드 말풍선 안쪽에 메모/용의자 표시
 function updateMainBoardIndicators() {
     PLAYERS.forEach((player, index) => {
         const bubble = document.querySelector(`.speech-bubble.bubble-${index + 1}`);
@@ -324,23 +334,15 @@ function updateMainBoardIndicators() {
                 memoTag.className = 'board-memo-tag';
                 bubble.appendChild(memoTag);
             }
-
-            // 죽은 사람이면 표시 안 함
             if (player.isDead) {
                 memoTag.style.display = 'none';
                 return;
             }
-
-            // 메모가 있거나 용의자 체크가 되어있으면 표시
             if (player.isSuspect || player.memo.trim() !== "") {
                 memoTag.style.display = 'flex';
                 let contentHTML = '';
-                if (player.isSuspect) {
-                    contentHTML += `<span class="suspect-mark">🚨 SUSPECT</span>`;
-                }
-                if (player.memo.trim() !== "") {
-                    contentHTML += `<span class="memo-text">${player.memo}</span>`;
-                }
+                if (player.isSuspect) contentHTML += `<span class="suspect-mark">🚨 SUSPECT</span>`;
+                if (player.memo.trim() !== "") contentHTML += `<span class="memo-text">${player.memo}</span>`;
                 memoTag.innerHTML = contentHTML;
             } else {
                 memoTag.style.display = 'none';
@@ -365,10 +367,7 @@ function renderNotebookCards() {
         card.innerHTML = `
             <div class="nb-card-header">
                 <span>${player.name}</span>
-                <label>
-                    <input type="checkbox" class="nb-suspect-check" ${player.isDead ? "disabled" : ""} ${isChecked}> 
-                    SUSPECT
-                </label>
+                <label><input type="checkbox" class="nb-suspect-check" ${player.isDead ? "disabled" : ""} ${isChecked}> SUSPECT</label>
             </div>
             <textarea class="nb-textarea" placeholder="메모를 입력하세요..." ${player.isDead ? "disabled" : ""}>${player.memo}</textarea>
         `;
@@ -376,7 +375,6 @@ function renderNotebookCards() {
         const textarea = card.querySelector(".nb-textarea");
         const checkbox = card.querySelector(".nb-suspect-check");
         
-        // 글씨 쓸 때마다 실시간으로 말풍선 업데이트
         textarea.addEventListener("input", (e) => {
             PLAYERS[index].memo = e.target.value;
             showSaveStatus();
@@ -391,19 +389,14 @@ function renderNotebookCards() {
         
         nbCards.appendChild(card);
     });
-    
     updateMainBoardIndicators();
 }
 
-// ★ 수정됨: CLEAR ALL 버튼 완벽 작동 로직
 if (nbClearAll) {
     nbClearAll.addEventListener("click", () => {
         if (confirm("모든 메모와 용의자 지목을 초기화하시겠습니까?")) {
-            PLAYERS.forEach(p => { 
-                p.memo = ""; 
-                p.isSuspect = false; 
-            });
-            renderNotebookCards(); // 화면 초기화
+            PLAYERS.forEach(p => { p.memo = ""; p.isSuspect = false; });
+            renderNotebookCards(); 
             showSaveStatus();
         }
     });
