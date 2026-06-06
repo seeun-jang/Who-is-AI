@@ -2,16 +2,21 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <script src="js/waiting-modal.js" defer></script>
-    <link rel="stylesheet" href="css/waiting-modal.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Who Is AI - Game</title>
 
     <link rel="stylesheet" href="css/game.css">
-    <script src="js/game.js" defer></script>
-    
     <link rel="stylesheet" href="css/my-ui.css">
+    <link rel="stylesheet" href="css/waiting-modal.css">
+    <link rel="stylesheet" href="css/keyword-modal.css">
+
+    <script src="js/game.js" defer></script>
     <script src="js/my-ui.js" defer></script>
+    <script src="js/waiting-modal.js" defer></script>
+    <script src="js/keyword-modal.js" defer></script>
+
+    <script src="js/ui-render.js" defer></script>
+    <script src="js/ws.js" defer></script>
 </head>
 <body>
 
@@ -38,7 +43,7 @@
             <span id="timerDisplay">60</span>
         </div>
 
-        <div id="topicModal" class="modal-overlay">
+        <div id="topicModal" class="modal-overlay hidden">
             <div class="topic-modal">
                 <h2>제시어 공개</h2>
                 <p>이번 라운드 제시어</p>
