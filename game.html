@@ -10,8 +10,6 @@
     <link rel="stylesheet" href="css/waiting-modal.css">
     <link rel="stylesheet" href="css/keyword-modal.css">
 
-    <script src="js/game.js" defer></script>
-    <script src="js/my-ui.js" defer></script>
     <script src="js/waiting-modal.js" defer></script>
     <script src="js/keyword-modal.js" defer></script>
 
@@ -23,7 +21,7 @@
     <main class="game-page">
         <div class="topic-board">
             <span>제시어</span>
-            <strong id="topicHeaderText">프랑스</strong>
+            <strong id="topicHeaderText">???</strong>
         </div>
 
         <div id="turn-indicator">
@@ -52,16 +50,33 @@
             </div>
         </div>
 
-        <div class="speech-bubble bubble-1"><div class="bubble-header">Player 1</div><div class="bubble-body">프랑스는 빵이 유명해.</div></div>
-        <div class="speech-bubble bubble-2"><div class="bubble-header">Player 2</div><div class="bubble-body">사용하는 언어는 불어를 써.</div></div>
-        <div class="speech-bubble bubble-3"><div class="bubble-header">Player 3</div><div class="bubble-body">프랑스의 수도는 파리야.</div></div>
-        <div class="speech-bubble bubble-4"><div class="bubble-header">Player 4</div><div class="bubble-body">'라따뚜이'라는 영화의 배경이야.</div></div>
-        <div class="speech-bubble bubble-5"><div class="bubble-header">Player 5</div><div class="bubble-body">화폐단위는 유로야.</div></div>
+        <div class="speech-bubble bubble-1">
+            <div class="bubble-header">Player 1</div>
+            <div class="bubble-body"></div>
+        </div>
+        <div class="speech-bubble bubble-2">
+            <div class="bubble-header">Player 2</div>
+            <div class="bubble-body"></div>
+        </div>
+        <div class="speech-bubble bubble-3">
+            <div class="bubble-header">Player 3</div>
+            <div class="bubble-body"></div>
+        </div>
+        <div class="speech-bubble bubble-4">
+            <div class="bubble-header">Player 4</div>
+            <div class="bubble-body"></div>
+        </div>
+        <div class="speech-bubble bubble-5">
+            <div class="bubble-header">Player 5</div>
+            <div class="bubble-body"></div>
+        </div>
+
         <div class="player-tag player-1">Player 1</div>
         <div class="player-tag player-2">Player 2</div>
         <div class="player-tag player-3">Player 3</div>
         <div class="player-tag player-4">Player 4</div>
         <div class="player-tag player-5">Player 5</div>
+        
         <section class="chat-bar">
             <input type="text" id="chatInput" placeholder="메시지를 입력하세요...">
             <button id="sendBtn">➤</button>
@@ -102,20 +117,20 @@
         </div>
 
         <div id="finalDecisionModal" class="modal-overlay hidden">
-        <div class="topic-modal" style="border-color: #8c1d18;">
-            <h2 style="color: #8c1d18; font-size: 32px;">FINAL DECISION</h2>
-            <p style="font-size: 16px; margin-bottom: 20px;">최후의 발언이 끝났습니다.</p>
-            <div style="margin: 20px 0;">
-                <strong id="finalDecisionTargetName" style="font-size: 36px; color: #23160c;">PLAYER</strong>
-            </div>
-            <p style="font-size: 20px; font-weight: bold; color: #8c1d18; white-space: nowrap;">이 플레이어를 처형하시겠습니까?</p>
-            
-            <div style="display: flex; justify-content: center; gap: 15px; margin-top: 30px;">
-                <button id="btnSpare" style="background: #3a6b40; width: 140px; border: none; color: #f0dcb2; font-weight: bold; cursor: pointer; padding: 12px 0;">사면 (살려주기)</button>
-                <button id="btnExecute" style="background: #8c1d18; width: 140px; border: none; color: #f0dcb2; font-weight: bold; cursor: pointer; padding: 12px 0;">처형 집행</button>
+            <div class="topic-modal" style="border-color: #8c1d18;">
+                <h2 style="color: #8c1d18; font-size: 32px;">FINAL DECISION</h2>
+                <p style="font-size: 16px; margin-bottom: 20px;">최후의 발언이 끝났습니다.</p>
+                <div style="margin: 20px 0;">
+                    <strong id="finalDecisionTargetName" style="font-size: 36px; color: #23160c;">PLAYER</strong>
+                </div>
+                <p style="font-size: 20px; font-weight: bold; color: #8c1d18; white-space: nowrap;">이 플레이어를 처형하시겠습니까?</p>
+                
+                <div style="display: flex; justify-content: center; gap: 15px; margin-top: 30px;">
+                    <button id="btnSpare" style="background: #3a6b40; width: 140px; border: none; color: #f0dcb2; font-weight: bold; cursor: pointer; padding: 12px 0;">사면 (살려주기)</button>
+                    <button id="btnExecute" style="background: #8c1d18; width: 140px; border: none; color: #f0dcb2; font-weight: bold; cursor: pointer; padding: 12px 0;">처형 집행</button>
+                </div>
             </div>
         </div>
-    </div>
 
         <div id="verdictModal" class="modal-overlay hidden">
             <div class="topic-modal">
