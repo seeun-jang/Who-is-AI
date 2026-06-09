@@ -2,12 +2,13 @@
 // WebSocket 서버 연결 및 라운드 전환 시 UI 완벽 초기화 추가
 
 (function () {
-  const WS_URL = "ws://nextwave.aikopo.net/ai-mafia/ws?mode=group";
+  const mode = sessionStorage.getItem("gameMode") || "group";
+  const WS_URL = `ws://nextwave.aikopo.net/ai-mafia/ws?mode=${mode}`;
 
   let socket = null;
   let typingTimer = null;
-  let chatMode = "experience"; 
-  let currentTurnPlayerId = null; 
+  let chatMode = "experience";
+  let currentTurnPlayerId = null;
 
   function connectWebSocket() {
     socket = new WebSocket(WS_URL);
@@ -41,21 +42,21 @@
         window.UIRender.hideWaitingRoom();
         if (Array.isArray(data.players)) window.UIRender.updatePlayerNames(data.players);
         break;
-        
+
       // ★ 핵심 수정: 새 라운드가 시작되면 UI의 모든 잡다한 상태를 물청소(Reset) 한다!
       case "round_start":
         chatMode = "experience";
         if (window.UIRender && window.UIRender.resetPhase) window.UIRender.resetPhase();
         window.UIRender.updateKeyword(data.prompt_word || data.keyword || "");
         break;
-        
+
       case "turn_start":
       case "experience_request":
         chatMode = "experience";
         currentTurnPlayerId = data.current_player_id || data.player_id;
         if (window.UIRender) window.UIRender.showCurrentTurn(currentTurnPlayerId, data.timeout || 60);
         break;
-        
+
       case "experience_submitted":
       case "chat_message":
         window.UIRender.showPlayerBubble(data.player_id || data.id, data.content || data.message);
@@ -71,7 +72,7 @@
       case "vote_result":
         window.UIRender.showVerdictResult(data);
         break;
-      case "vote_start":
+      case "voting_start":
         window.UIRender.showVoteStart();
         break;
       case "game_over":
@@ -95,9 +96,9 @@
     function submitMessage(e) {
       if (e) {
         e.preventDefault();
-        e.stopImmediatePropagation(); 
+        e.stopImmediatePropagation();
       }
-      
+
       const content = chatInput.value.trim();
       if (!content) return;
 
@@ -124,7 +125,7 @@
 
     chatInput.addEventListener("keydown", (event) => {
       if (event.key === "Enter" && !event.shiftKey) submitMessage(event);
-    }, true); 
+    }, true);
 
     chatInput.addEventListener("input", () => {
       sendTypingStatus(true);
