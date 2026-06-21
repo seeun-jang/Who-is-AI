@@ -3,7 +3,7 @@
 
 (function () {
   const mode = sessionStorage.getItem("gameMode") || "group";
-  const WS_URL = `ws://nextwave.aikopo.net/ai-mafia/ws?mode=${mode}`;
+  const WS_URL = `wss://nextwave.aikopo.net/ai-mafia/ws?mode=${mode}`;
 
   let socket = null;
   let typingTimer = null;
